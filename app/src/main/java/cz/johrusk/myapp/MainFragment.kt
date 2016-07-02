@@ -51,6 +51,13 @@ class MainFragment : Fragment() {
                 toast(iTitle + " is selected!")
                 EventBus.getDefault().post(MessageEvent(iTitle, iBody))
                 EventBus.getDefault().postSticky(MessageEvent(iTitle, iBody))
+
+                val args = Bundle();
+                args.putString("title",iTitle)
+                args.putString("body",iBody)
+                val frag = DetailFragment()
+                frag.arguments = args
+                if (!MainActivity.isTablet) activity.supportFragmentManager.beginTransaction().replace(R.id.cont, frag).addToBackStack(null).commit()
             }
 
             override fun onLongClick(view: View, position: Int) {

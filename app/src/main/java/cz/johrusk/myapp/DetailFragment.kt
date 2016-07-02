@@ -14,6 +14,21 @@ import org.greenrobot.eventbus.Subscribe
  * Created by Pepa on 02.07.2016.
  */
 class DetailFragment : Fragment() {
+    var body: String? = null
+    var title: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+         title = getArguments().getString("title");
+         body = getArguments().getString("body");
+
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tv_detail_title.setText(Html.fromHtml(title))
+        tv_detail_body.setText(Html.fromHtml(body))
+    }
 
     override fun onStart() {
         super.onStart()
@@ -33,6 +48,7 @@ class DetailFragment : Fragment() {
     companion object {
 
         fun newInstance(): DetailFragment {
+
             val fragment = DetailFragment()
 
             return fragment

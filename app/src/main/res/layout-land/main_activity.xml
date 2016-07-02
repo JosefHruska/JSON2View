@@ -22,13 +22,30 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:id= "@+id/linear"
+        android:weightSum="5"
+        >
+
     <FrameLayout
         android:id="@+id/cont"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        >
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/detail_frame"
+        android:layout_weight="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+    </FrameLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
