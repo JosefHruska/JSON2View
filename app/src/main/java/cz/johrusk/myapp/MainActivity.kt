@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.view.View
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.main_activity.*
+import kotlinx.android.synthetic.main.main_content.*
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 import org.jetbrains.anko.warn
 import java.util.*
 
@@ -44,9 +47,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
 
     }
-   public fun switchFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.cont, DetailFragment()).addToBackStack(null).commit()
-    }
+
 
     fun isTablet() {
 
@@ -69,8 +70,18 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         } else {
             isTablet = false
         }
+    }
 
-
+    fun showProgressCircle(isVisible: Boolean) {
+        if (loading_view != null) {
+            if (isVisible) {
+                loading_view?.visibility = View.VISIBLE
+                debug("progress visibility = true")
+            } else {
+                loading_view?.visibility = View.GONE
+                debug("progress visibility = false")
+            }
+        }
     }
 
 }
