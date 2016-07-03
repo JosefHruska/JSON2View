@@ -1,11 +1,17 @@
-package cz.johrusk.myapp
+package cz.johrusk.myapp.Activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.view.Menu
 import android.view.View
 import android.widget.LinearLayout
+import cz.johrusk.myapp.Adapter.RecipeAdapter
+import cz.johrusk.myapp.Fragment.DetailFragment
+import cz.johrusk.myapp.Fragment.MainFragment
+import cz.johrusk.myapp.R
+import cz.johrusk.myapp.Realm.Recipe
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_content.*
 import org.jetbrains.anko.AnkoLogger
@@ -13,14 +19,26 @@ import org.jetbrains.anko.debug
 import org.jetbrains.anko.warn
 import java.util.*
 
+
+
+/**
+ * Main activity class
+ *
+ * @author Josef Hruška (pepa.hruska@gmail.com)
+ */
 class MainActivity : AppCompatActivity(), AnkoLogger {
     private val recipeList = ArrayList<Recipe>()
     private var recyclerView: RecyclerView? = null
     private var mAdapter: RecipeAdapter? = null
 
-    companion object{
+    companion object {
         var isTablet = false
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,19 +53,11 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
             cParam.weight = 2.0f
             detail_frame.layoutParams = dParam
             cont.layoutParams = cParam
-//            val detail_param  = detail_frame as LinearLayout.LayoutParams?: throw NullPointerException("params is null?")
-//            detail_param.weight = 3.0f
-//            val cont_param  = detail_frame as LinearLayout.LayoutParams?: throw NullPointerException("params is null?")
-//            cont_param.weight = 2.0f
         } else warn("Device is considered as Phone (7''+)")
 
         supportFragmentManager.beginTransaction().replace(R.id.cont, MainFragment()).commit()
-        //   val toolbar = findViewById(R.id.toolbar) as Toolbar //TODO Is it OK?
         setSupportActionBar(toolbar)
-
-
     }
-
 
     fun isTablet() {
 

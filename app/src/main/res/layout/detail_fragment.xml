@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="10"
+    android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="40dp"
-    >
+    android:weightSum="10">
 
 
     <TextView
-        android:text=""
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/tv_detail_title"
-        android:textSize="24sp"
-        android:layout_weight="1"
-        android:layout_marginTop="40dp"
-        android:textAlignment="center"
-        android:maxLines="1"
-        />
-
-    <TextView
-        android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_weight="1"
+        android:maxLines="1"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+    <TextView
         android:id="@+id/tv_detail_body"
-        android:textSize="14sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="9"
+        android:text=""
+        android:textSize="14sp"
 
         />
 </LinearLayout>

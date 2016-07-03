@@ -1,4 +1,4 @@
-package cz.johrusk.myapp
+package cz.johrusk.myapp.Fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,12 +6,15 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import cz.johrusk.myapp.R
 import kotlinx.android.synthetic.main.detail_fragment.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 /**
- * Created by Pepa on 02.07.2016.
+ * Fragment which shows title and body of item
+ *
+ * @author Josef Hruška (pepa.hruska@gmail.com)
  */
 class DetailFragment : Fragment() {
     var body: String? = null
@@ -19,8 +22,8 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         title = getArguments().getString("title");
-         body = getArguments().getString("body");
+        title = getArguments().getString("title")
+        body = getArguments().getString("body")
 
     }
 

@@ -1,4 +1,4 @@
-package cz.johrusk.myapp
+package cz.johrusk.myapp.Adapter
 
 
 import android.support.v7.widget.RecyclerView
@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import cz.johrusk.myapp.R
+import cz.johrusk.myapp.Realm.Recipe
 
+/**
+ * RecyclerView adapter
+ *
+ * @author Josef Hruška (pepa.hruska@gmail.com)
+ */
 
 class RecipeAdapter(private val recipesList: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView
-        var body: TextView
 
         init {
             title = view.findViewById(R.id.title) as TextView
-            body = view.findViewById(R.id.body) as TextView
         }
     }
 
@@ -29,8 +34,6 @@ class RecipeAdapter(private val recipesList: List<Recipe>) : RecyclerView.Adapte
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val recipe = recipesList[position]
         holder.title.text = recipe.title
-        holder.body.text = recipe.body
-
     }
 
     override fun getItemCount(): Int {

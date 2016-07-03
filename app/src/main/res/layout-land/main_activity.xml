@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".Activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -23,29 +22,27 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:id= "@+id/linear"
-        android:weightSum="5"
-        >
+        android:weightSum="5">
 
-    <FrameLayout
-        android:id="@+id/cont"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="5"
-        >
+        <FrameLayout
+            android:id="@+id/cont"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
 
-    </FrameLayout>
+        </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/detail_frame"
-        android:layout_weight="0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/detail_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0">
 
-    </FrameLayout>
+        </FrameLayout>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
