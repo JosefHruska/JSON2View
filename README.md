@@ -1,8 +1,8 @@
 # JSON2View
 
-Sample android app working with JSON and Realm DB. Just for personal educational purpose. 
+Simple android app working with JSON and Realm DB. Just for personal educational purpose. 
 
-App is so simple that it makes no sense to use additional services/async task. However it could be very easily moved to these addition thread
+
 
 This app had to implement this conditions:
 
