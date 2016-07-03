@@ -24,13 +24,12 @@ import es.dmoral.prefs.Prefs
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import io.realm.RealmResults
+import kotlinx.android.synthetic.main.main_content.*
 import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.support.v4.uiThread
 import org.jetbrains.anko.warn
 import org.json.JSONObject
 import java.util.*
@@ -51,6 +50,7 @@ class MainFragment : Fragment(), AnkoLogger {
         var realmConfig: RealmConfiguration? = null
         var realm: Realm? = null
         var isDBComplete: Boolean? = null
+        var showLoading = false
         var dbSize: Int? = null
         var mRequestQueue: RequestQueue? = null
         val TAG = "TAG" // Tag is best choice to safely remove all pending Volley request (onStop)
@@ -85,6 +85,8 @@ class MainFragment : Fragment(), AnkoLogger {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
+
+
         recyclerView = find<RecyclerView>(R.id.recycler_view)
         mAdapter = RecipeAdapter(recipeList)
 
@@ -113,7 +115,6 @@ class MainFragment : Fragment(), AnkoLogger {
             }
 
             override fun onLongClick(view: View, position: Int) {
-
             }
         }))
 
@@ -121,8 +122,7 @@ class MainFragment : Fragment(), AnkoLogger {
     }
 
     fun work() {
-        populateFromDB()
-
+        showLoading = Prefs.with(ctx).readBoolean("SHOULD_SHOW_LOADING", true)
         if (!Prefs.with(ctx).readBoolean(getString(R.string.enough_items), false)) {
             (activity as MainActivity).showProgressCircle(true)
         }
@@ -130,18 +130,24 @@ class MainFragment : Fragment(), AnkoLogger {
 
         val numberPagesL = Prefs.with(ctx).readInt("NUMBER_OF_PAGES_IN_DB", 0) // Last page which was downloaded
         dbSize = realm!!.where(Recipe::class.java).findAll().size.toInt()
-
-        fetchJSON(numberPagesL)
+        when (isDBComplete) {
+            false -> fetchJSON(numberPagesL)
+            true -> {
+                warn("Database is complete")
+                populateFromDB()
+            }
+        }
     }
 
     fun reloadDB() {
         warn("Reloading DB...")
+        mAdapter = RecipeAdapter(recipeList)
         work()
-
     }
 
-
     fun fetchJSON(URL_PAGE: Int) {
+
+        if (showLoading) loading_view.visibility = View.VISIBLE
         warn("Method: fetchJSON")
         isFetching = true
         val BASE_URL: String = "https://api.stackexchange.com/2.2/questions?filter=withbody&fromdate=1459468800&todate=1461974400&order=desc&sort=creation&site=cooking&pagesize=5&page="
@@ -167,11 +173,10 @@ class MainFragment : Fragment(), AnkoLogger {
             }
         }, Response.ErrorListener { // calls when there is a connection problem 404, 502 etc.
             warn("There is a problem with connection")
-
+            populateFromDB()
             isFetching = false
         })
         stringRequest.tag = TAG
-        //It reruns download for first 4 page to fill screen with enough items
         mRequestQueue!!.add(stringRequest)
 
     }
@@ -179,33 +184,33 @@ class MainFragment : Fragment(), AnkoLogger {
     override fun onStop() {
         super.onStop()
         warn { "Onstop" }
-
+        Prefs.with(ctx).writeBoolean("SHOULD_SHOW_LOADING",false)
         mRequestQueue?.cancelAll(TAG) ?: warn("mRequestQueue == null")
     }
 
 
     fun writeToDB(jsonObj: JSONObject): Boolean {
-        doAsync {
-        val gson: Gson = GsonBuilder().create()
-        val jsonStr = jsonObj.getJSONArray("items").toString()
-        val items: List<Recipe> = gson.fromJson(jsonStr, object : TypeToken<List<Recipe>>() {}.type)
-        realm!!.beginTransaction()
-        val realmItems: Collection<Recipe> = realm!!.copyToRealm(items) // Saves all items to DB
-        realm!!.commitTransaction()
-        dbSize = realm!!.where(Recipe::class.java).findAll().size.toInt() // Amount of items in DB
-        warn("Size of db: " + dbSize.toString())
-        savePageInDB(dbSize as Int)
-            uiThread {
-        val viewLength = mAdapter?.itemCount ?: throw NullPointerException("mAdapter null")
-        if ((dbSize!! - viewLength) >= 20) {
-            warn("adapter updated")
-            updateList(realmItems)
-                }
-            }
+
+            val gson: Gson = GsonBuilder().create()
+            val jsonStr = jsonObj.getJSONArray("items").toString()
+            val items: List<Recipe> = gson.fromJson(jsonStr, object : TypeToken<List<Recipe>>() {}.type)
+            realm!!.beginTransaction()
+            val realmItems: Collection<Recipe> = realm!!.copyToRealm(items) // Saves all items to DB
+            realm!!.commitTransaction()
+            dbSize = realm!!.where(Recipe::class.java).findAll().size.toInt() // Amount of items in DB
+            warn("Size of db: " + dbSize.toString())
+            savePageInDB(dbSize as Int)
+
+                val viewLength = mAdapter?.itemCount ?: throw NullPointerException("mAdapter null")
+                if ((dbSize!! - viewLength) >= 20) {
+                    warn("adapter updated")
+                    updateList(realmItems)
 
         }
         if (!jsonObj.getBoolean("has_more")) {
             warn("It was last page")
+            if (loading_view.visibility == View.VISIBLE) {loading_view.visibility = View.GONE}
+            populateFromDB()
             return false
         } else {
             warn("More pages available")
@@ -219,7 +224,8 @@ class MainFragment : Fragment(), AnkoLogger {
         isDBComplete = false
 
         realm?.beginTransaction()
-        mAdapter?.notifyItemRangeRemoved(0, mAdapter!!.itemCount)
+        mAdapter = null
+        mAdapter?.notifyDataSetChanged()
         val result: RealmResults<Recipe> = realm?.where(Recipe::class.java)!!.findAll()
         result.deleteAllFromRealm()
         Prefs.with(ctx).writeInt(getString(R.string.page_number), 0)
@@ -237,8 +243,14 @@ class MainFragment : Fragment(), AnkoLogger {
     }
 
     fun populateFromDB() {
+        if(showLoading) {
+            if (loading_view?.visibility == View.VISIBLE) {
+                loading_view?.visibility = View.GONE
+            }
+        }
         var list = realm?.where(Recipe::class.java)?.findAll()?.toList()
         recipeList = ArrayList<Recipe>(list)
+        mAdapter = RecipeAdapter(recipeList)
         recyclerView!!.adapter = mAdapter
         mAdapter!!.notifyDataSetChanged()
         warn("mADAPTER has size: " + mAdapter!!.itemCount)

@@ -2,6 +2,7 @@ package cz.johrusk.myapp.Adapter
 
 
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,9 +34,8 @@ class RecipeAdapter(private val recipesList: List<Recipe>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val recipe = recipesList[position]
-        holder.title.text = recipe.title
+        holder.title.text = (Html.fromHtml(recipe.title))
     }
-
     override fun getItemCount(): Int {
         return recipesList.size
     }

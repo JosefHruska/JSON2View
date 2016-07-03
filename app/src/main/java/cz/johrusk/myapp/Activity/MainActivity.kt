@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+        isTablet()
         if (isTablet and (detail_frame != null)) {
             warn("Device is considered as Tablet (7''+)")
             supportFragmentManager.beginTransaction().replace(R.id.detail_frame, DetailFragment()).commit()

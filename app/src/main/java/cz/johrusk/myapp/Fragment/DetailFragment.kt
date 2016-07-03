@@ -22,20 +22,23 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = getArguments().getString("title")
-        body = getArguments().getString("body")
-
+        if (arguments != null) {
+            title = getArguments().getString("title")
+            body = getArguments().getString("body")
+        }
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tv_detail_title.setText(Html.fromHtml(title))
-        tv_detail_body.setText(Html.fromHtml(body))
+        if (title != null) {
+            tv_detail_title.setText(Html.fromHtml(title))
+            tv_detail_body.setText(Html.fromHtml(body))
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this); // Register EventBus instance to subscribe events
+        EventBus.getDefault().register(this) // Register EventBus instance to subscribe events
     }
 
     override fun onStop() {
